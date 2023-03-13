@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>仿·明日方舟官网</title>
+  <script type="module" crossorigin src="/assets/index.d72203c4.js"></script>
+  <link rel="stylesheet" href="/assets/index.3ded91a0.css">
+</head>
+
+<body>
+  <div id="app"></div>
+  <div>
+    <div id="pointer"></div>
+    <div id="pointer-effect"></div>
+  </div>
+  
+</body>
+<style>
+  * {
+    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGBAMAAAAS4vJ7AAAAElBMVEX///////////////////////+65XQCAAAABXRSTlPUzXppDN7WmLAAAAAZSURBVAjXY3ASVGEwDQ1mYA0NAGEQGyQGAC9SA/00lbgwAAAAAElFTkSuQmCC) 4 4, default;
+  }
+
+  #pointer {
+    transform: translate3d(-50%, -50%, 0px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #cccccc;
+    border-radius: 50%;
+    /* 自带动画 */
+    transition-property: opacity, background-color, left, top, width, height;
+    transition-duration: .3s, .3s, .1s, .1s, .3s, .3s;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #pointer-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    border: 4px solid #ccc;
+    border-radius: 50%;
+    transform: translate3d(-50%, -50%, 0px) scale(1);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #pointer.hidden {
+    opacity: 0;
+  }
+
+  #pointer.hover {
+    width: 24px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  @keyframes effect {
+    0% {
+      transform: translate3d(-50%, -50%, 0px) scale(0.1);
+      opacity: 0.8;
+    }
+
+    30% {
+      opacity: 0.4;
+    }
+
+    100% {
+      transform: translate3d(-50%, -50%, 0px) scale(1);
+      opacity: 0;
+    }
+  }
+</style>
+<script>
+  const body = document.querySelector('body')
+  const element = document.getElementById('pointer')
+  const elementEffect = document.getElementById('pointer-effect')
+
+  function setPosition(x, y) {
+    element.style.top = y - 1 + 'px'
+    element.style.left = x - 1 + 'px'
+  }
+  // 告诉浏览器需要执行动画，帧数更高
+  body.onmousemove = e => {
+    window.requestAnimationFrame(() => setPosition(e.clientX, e.clientY))
+    // 鼠标移到含有自定义属性的元素时对圈添加样式
+    e.target.dataset.cursor || e?.fromElement?.dataset.cursor ? element.classList.add('hover') : element.classList.remove('hover')
+  }
+
+  body.onmouseenter = e => { element.classList.remove('hidden') }//鼠标经过
+  body.onmouseleave = e => { element.classList.add('hidden') }//鼠标离开
+
+  let throttle = true //节流
+  body.onclick = (e) => {
+    if (throttle) {
+      throttle = false
+      elementEffect.style.top = e.clientY - 1 + 'px'
+      elementEffect.style.left = e.clientX - 1 + 'px'
+      elementEffect.style.animation = 'effect 0.5s'
+      setTimeout(() => {
+        elementEffect.style.animation = ''
+        throttle = true
+      }, 500)
+    }
+  }
+  // 旧代码
+  // body.onmouseover = e => {
+  //   e.target.dataset.cursor || e?.fromElement?.dataset.cursor ? element.classList.add('hover') : element.classList.remove('hover')
+  //   console.log(e.target.dataset.cursor,e?.fromElement?.dataset.cursor)
+  // }
+
+</script>
+
+</html>
